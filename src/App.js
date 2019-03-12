@@ -1,26 +1,49 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import '../src/App.css';
+import './global.css';
+import Header from '../src/components/Header';
+import Doctors from "../src/components/Doctors";
+import { Route } from 'react-router-dom';
+import DoctorDetails from './components/DoctorDetails';
+import axios from 'axios';
+
 
 class App extends Component {
+  constructor(){
+    super();
+    this.state = { 
+      doctors : [] 
+    };
+}
+
+getAllDoctors = () =>{
+  axios.get(`http://localhost:8000/api/doctors`)
+  .then(responseFromApi => {
+    const doctors = responseFromApi.data["hydra:member"]
+    this.setState({doctors})
+  })
+}
+
+
+
+componentDidMount() {
+  this.getAllDoctors();
+}
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <React.Fragment>
+        <Header/>
+        <Route
+            exact
+            path="/"
+            render={() => <Doctors doctors={this.state.doctors} />}
+          />
+        <Route
+            exact
+            path="/details/:doctorId"
+            render={(props) => <DoctorDetails match={props.match} doctors={this.state.doctors} />}
+          />      
+        </React.Fragment>
     );
   }
 }
