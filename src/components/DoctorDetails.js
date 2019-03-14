@@ -5,7 +5,7 @@ import profil from '../img/profil.png'
 
 class DoctorDetails extends Component {
     render() {
-      const doctorId = this.props.match.params.doctorId;
+      const doctorId = this.props.match.params.doctorId; //récuperer l'id de l'url
       const selectedDoctor = this.props.doctors.filter((doctor) => doctor.id === Number(doctorId)).shift();
       console.log(selectedDoctor);
         return(

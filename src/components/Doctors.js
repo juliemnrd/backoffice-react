@@ -6,21 +6,37 @@ import axios from 'axios';
 class Doctors extends Component {
   constructor(){
     super();
-    this.state = { 
-      isValidate : false
-    };
-}
+  }
 
-// getAllDoctors = () =>{
-//   axios.put(`http://localhost:8000/api/doctors`)
-//   .then(responseFromApi => {
-//     const doctors = responseFromApi.data["hydra:member"]
-//     this.setState({doctors})
-//   })
-// }
+validateDoctor = (id) => {
+  const selectedDoctor = this.props.doctors.filter((doctor) => doctor.id === Number(id)).shift();
+  selectedDoctor.isValidate = true
+  axios
+  .put(`http://localhost:8000/api/doctors/${id}`, selectedDoctor)
+  .then((res) => {
+    console.log(res, "Success !");
+  })
+  .catch((err) => {
+    console.log(err, "Failed ! ");
+  });
+ };
+
+ unvalidateDoctor = (id) => {
+  const selectedDoctor = this.props.doctors.filter((doctor) => doctor.id === Number(id)).shift();
+  selectedDoctor.isValidate = false
+  axios
+  .put(`http://localhost:8000/api/doctors/${id}`, selectedDoctor)
+  .then((res) => {
+    console.log(res, "Success !");
+  })
+  .catch((err) => {
+    console.log(err, "Failed ! ");
+  });
+ };
+
+
     render() {
-      // console.log(this.state.doctors.name)
-      console.log(this.props)
+      console.log(this.props.doctors)
       return(
         <React.Fragment>
       
@@ -34,8 +50,6 @@ class Doctors extends Component {
             ?
             <h1>no doctors</h1>
             : (
-
-
             <section>
                 <div className="table">
                 <table>
@@ -61,10 +75,20 @@ class Doctors extends Component {
                   </td>
 
                   <td>
+                  {doctors.isValidate === false ?
                     <label className="switch">
-                      <input type="checkbox" />
+                      <input type="checkbox" onChange={()=>this.validateDoctor(doctors.id)}/>
                       <span className="slider round" />
                     </label>
+                
+                  : (
+                  
+                    <label className="switch">
+                      <input type="checkbox" onChange={()=>this.unvalidateDoctor(doctors.id)} checked/>
+                      <span className="slider round" />
+                    </label>
+
+                  )}
                   </td>
                 </tr>
                 )}
